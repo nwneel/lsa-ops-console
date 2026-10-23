@@ -285,7 +285,7 @@ function viewOverview() {
     <div class="kpi"><div class="l">Leads</div><div class="v">${num(cur.leads)}</div><div class="d">${deltaHtml(cur.leads, prv.leads)}</div></div>
     <div class="kpi"><div class="l">Cost per charged lead</div><div class="v">${money(cpl, 2)}</div><div class="d">${deltaHtml(cpl, pcpl, false)}</div></div>
     <div class="kpi"><div class="l">Active accounts</div><div class="v">${activeCount}<span style="font-size:15px;color:var(--muted);font-weight:500"> / ${A.length}</span></div><div class="d">${A.length - activeCount} paused or suspended</div></div>
-    <div class="kpi alert"><div class="l">Need attention</div><div class="v">${flagged.size}</div><div class="d"><span class="delta-down">${critAcc.size} critical</span> · ${flagged.size - critAcc.size} warning</div></div>
+    <div class="kpi alert"><div class="l">Accounts needing attention</div><div class="v">${flagged.size}</div><div class="d"><span class="delta-down">${critAcc.size} critical</span> · ${flagged.size - critAcc.size} warnings only</div></div>
   </div>
   <div class="grid g-2">
     <div class="panel"><div class="panel-h"><h2>Daily spend</h2><span class="hint">All accounts · ${DAYS} days</span></div><div class="panel-b"><div class="chart" id="ch-spend"></div></div></div>
@@ -384,7 +384,7 @@ function viewHealth() {
   if (st.tab === "flags") {
     tab.innerHTML = `<div class="chips" style="margin-bottom:10px">${["critical", "warn", "info"].map(s => `<button class="chip" data-sev="${s}" aria-pressed="${st.sev === s}">${s === "warn" ? "Warning" : s[0].toUpperCase() + s.slice(1)} <b>${sevC[s]}</b></button>`).join("")}</div>
     <div class="chips" style="margin-bottom:14px">${Object.entries(counts).sort((a, b) => b[1] - a[1]).map(([c, n]) => `<button class="chip" data-check="${esc(c)}" aria-pressed="${st.check === c}">${esc(c)} <b>${n}</b></button>`).join("")}</div>
-    <div class="panel"><div class="panel-h"><h2>${rows.length} open flag${rows.length === 1 ? "" : "s"}</h2><span class="hint">Flags clear on their own when the next run no longer sees the problem</span>
+    <div class="panel"><div class="panel-h"><h2>${rows.length} open flag${rows.length === 1 ? "" : "s"} on ${new Set(rows.map(f => f.account_id)).size} accounts</h2><span class="hint">Flags clear on their own when the next run no longer sees the problem</span>
       <div class="right"><label class="note" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="show-ack" ${st.showAck ? "checked" : ""}> Show acknowledged (${acked})</label></div></div>
       <div class="panel-b tbl-wrap"><table><thead><tr><th>Severity</th><th>Agent</th><th>Check</th><th>What we saw</th><th>Suggested action</th><th>Since</th><th></th></tr></thead>
       <tbody>${rows.slice(0, 250).map(f => { const a = byId[f.account_id]; return `<tr>

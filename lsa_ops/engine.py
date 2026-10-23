@@ -296,6 +296,13 @@ class Engine:
             effect = f"8 new reviews: {a['rating']:.1f}★ ({a['reviews']}) → {rating:.1f}★ ({n})"
         elif cause == "Lead ratings":
             effect = f"Rated {self.feedback(aid, actor)} leads"
+        elif cause == "Budget":
+            r = self.propose(aid, "weekly_budget", a["weekly_budget"] * 1.2, "Fix task: budget runs out before afternoon peaks",
+                             "task", actor)
+            effect = {"applied": f"Budget {money(a['weekly_budget'])} → {money(r.get('new', 0))} applied",
+                      "dry_run": f"Budget {money(a['weekly_budget'])} → {money(r.get('new', 0))} (dry run)",
+                      "needs_approval": "Budget increase sent for approval",
+                      "already_pending": "A budget change is already waiting for approval"}.get(r["decision"], "Budget unchanged: daily change limit reached")
         self.con.execute("UPDATE tasks SET status='done', done_ts=? WHERE id=?", (now(), tid))
         self.log("task", actor, f"Done for {a['name']}: {fix}", effect)
 

@@ -200,9 +200,9 @@ def advance(con, day, seed=None):
                                 ((day - timedelta(days=1)).isoformat(),)).fetchall():
         con.execute("UPDATE leads SET status=? WHERE lead_id=?",
                     (rng.choices(["Active", "Booked", "Archived"], weights=[5, 0 if bad else 2, 3 if bad else 1])[0], lid))
-    # Google reviews disputes submitted at least a day ago (simulated outcome).
+    # Google reviews disputes by the end of the day they were submitted (simulated outcome).
     resolved = []
-    for lid, reason in con.execute("SELECT lead_id, dispute_reason FROM leads WHERE dispute_status='submitted' AND dispute_day<?",
+    for lid, reason in con.execute("SELECT lead_id, dispute_reason FROM leads WHERE dispute_status='submitted' AND dispute_day<=?",
                                    (day.isoformat(),)).fetchall():
         outcome = "credited" if rng.random() < CREDIT_ODDS.get(reason, 0.5) else "rejected"
         con.execute("UPDATE leads SET dispute_status=?, dispute_day=? WHERE lead_id=?", (outcome, day.isoformat(), lid))
