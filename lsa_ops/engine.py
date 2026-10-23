@@ -460,7 +460,7 @@ class Engine:
             for a in accts:
                 a["ladder"] = checks.ladder(a)
                 r = recommend.rule_based(a, metro.get(a["metro"]))
-                a["rec"] = {"new": round(r[0]), "reason": r[1]} if r else None
+                a["rec"] = {"new": round(r[0] / 10) * 10, "reason": r[1]} if r else None  # same $10 rounding as the guardrails
                 a["changes_today"] = self.changes_today(a["account_id"])
             sugg = self.suggestions()
             s = {
