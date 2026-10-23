@@ -1,0 +1,21 @@
+# Runtime data (SQLite database, server log)
+out/
+*.db
+*.db-journal
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Secrets
+.env
+.env.*
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
